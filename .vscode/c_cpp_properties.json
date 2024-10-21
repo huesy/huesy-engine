@@ -35,7 +35,10 @@
     {
       "name": "Win32",
       "includePath": [
-        "${workspaceFolder}/include/**"
+        "${workspaceFolder}/game/include/*",
+        "${workspaceFolder}/shared/include/*",
+        "${workspaceFolder}/engine/include/*",
+        "${workspaceFolder}/vendor/SDL/include/*"
       ],
       "defines": [
         "_DEBUG",

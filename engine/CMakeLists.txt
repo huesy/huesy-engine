@@ -4,11 +4,25 @@ project(engine)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SOURCES include/defines.h src/engine.c)
+# Define sources
+set(SOURCES
+    src/engine.c
+)
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-# Alternatively, use STATIC if you do not need a shared library.
+# Create library
+# - STATIC: static library (.a, .lib)
+# - SHARED: shared library (.so, .dll, .dylib)
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+# Include directories
+target_include_directories(${PROJECT_NAME}
+PUBLIC
+    include
+)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC shared)
+# Link libraries
+target_link_libraries(${PROJECT_NAME}
+PUBLIC
+    shared
+    SDL3::SDL3
+)

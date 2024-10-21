@@ -1,7 +1,7 @@
 #include "defines.h"
 
-int
-main(void)
+void
+shared_function(void)
 {
-	return 0;
+	// Shared functionality
 }

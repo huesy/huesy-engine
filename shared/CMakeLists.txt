@@ -1,11 +1,15 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.5)
 
 project(shared)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SOURCES include/defines.h src/shared.c)
+set(SOURCES
+    src/shared.c
+)
 
-add_library(${PROJECT_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC
+    include
+)
