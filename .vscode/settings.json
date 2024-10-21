@@ -1,0 +1,24 @@
+{
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "editor.rulers": [
+    80,
+  ],
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "editor.folding": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "ms-vscode.cpptools",
+  "[c]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.fontFamily": "Consolas, 'Courier New', monospace",
+  "C_Cpp.default.compilerPath": "C:\\LLVM\\bin\\clang.exe",
+}
