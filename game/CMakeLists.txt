@@ -8,7 +8,19 @@ set(SOURCES
     src/game.c
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+
+
+# Determine the appropriate flags based on the platform
+if(WIN32)
+    # On Windows, use WIN32 flag to specify a GUI application (suppresses console)
+    add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
+elseif(APPLE)
+    # On macOS, use MACOSX_BUNDLE to create an App Bundle (suppresses terminal)
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
+else()
+    # On other platforms (e.g., Linux), no special flags are needed
+    add_executable(${PROJECT_NAME} ${SOURCES})
+endif()
 
 target_include_directories(${PROJECT_NAME}
 PUBLIC
@@ -19,12 +31,3 @@ target_link_libraries(${PROJECT_NAME}
 PUBLIC
     engine
 )
-
-# # Post-build step to copy SDL DLLs (if using dynamic linking on Windows)
-# if (WIN32)
-#     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#             $<TARGET_FILE:SDL3::SDL3>
-#             $<TARGET_FILE_DIR:${PROJECT_NAME}>
-#     )
-# endif()

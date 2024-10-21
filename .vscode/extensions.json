@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-vscode.cpptools",
     "gruntfuggly.todo-tree",
-    "slevesque.shader"
+    "slevesque.shader",
+    "vadimcn.vscode-lldb",
   ]
 }

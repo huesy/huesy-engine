@@ -1,0 +1,145 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.sh",
+            "args": [
+                "debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Configure and build the Debug configuration"
+        },
+        {
+            "label": "Compile Debug",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.sh",
+            "args": [
+                "debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Build the Debug configuration",
+            "dependsOn": "Build Debug"
+        },
+        {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.sh",
+            "args": [
+                "release"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Configure and build the Release configuration"
+        },
+        {
+            "label": "Compile Release",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.sh",
+            "args": [
+                "release"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Build the Release configuration",
+            "dependsOn": "Build Release"
+        },
+        {
+            "label": "Build Debug Windows",
+            "type": "shell",
+            "command": "build.bat",
+            "args": [
+                "debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Configure and build the Debug configuration on Windows"
+        },
+        {
+            "label": "Compile Debug Windows",
+            "type": "shell",
+            "command": "build.bat",
+            "args": [
+                "debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Build the Debug configuration on Windows",
+            "dependsOn": "Build Debug Windows"
+        },
+        {
+            "label": "Build Release Windows",
+            "type": "shell",
+            "command": "build.bat",
+            "args": [
+                "release"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Configure and build the Release configuration on Windows"
+        },
+        {
+            "label": "Compile Release Windows",
+            "type": "shell",
+            "command": "build.bat",
+            "args": [
+                "release"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$msCompile"
+            ],
+            "detail": "Build the Release configuration on Windows",
+            "dependsOn": "Build Release Windows"
+        }
+    ]
+}
