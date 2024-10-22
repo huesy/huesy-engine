@@ -13,15 +13,21 @@
 #include "engine/defines.h"
 
 typedef struct MemorySystemConfig {
-	/** @brief The size of the memory pool. */
-	u64 poolSize;
+	u64 poolSize; /**< The size of the memory pool. */
 } MemorySystemConfig;
 
+typedef struct MemoryBlock {
+	struct MemoryBlock *next; /**< The next memory block. */
+	u64 size;				  /**< The size of the memory block. */
+	u8 data[];				  /**< The data of the memory block. */
+} MemoryBlock;
+
 typedef struct MemorySystem {
-	/** @brief The size of the memory pool. */
-	u64 poolSize;
-	/** @brief The memory pool. */
-	void *pool;
+	u64 poolSize;			 /**< The size of the memory pool. */
+	void *pool;				 /**< The memory pool. */
+	u64 usedMemory;			 /**< The amount of memory used. */
+	u32 allocationCount;	 /**< The number of allocations. */
+	MemoryBlock *freeBlocks; /**< The free list of memory blocks. */
 } MemorySystem;
 
 EngineResult memory_system_init(MemorySystem *system,
@@ -44,5 +50,12 @@ ENGINE_API void *memory_system_allocate(MemorySystem *system, u64 size);
  * @param ptr The pointer to the memory to free.
  */
 ENGINE_API void memory_system_free(MemorySystem *system, void *ptr);
+
+/**
+ * @brief Reallocates memory on the heap.
+ *
+ * @param system A pointer to the memory system.
+ */
+void memory_system_print_stats(const MemorySystem *system);
 
 #endif // ENGINE_MEMORY_H

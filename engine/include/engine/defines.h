@@ -10,6 +10,10 @@
 #ifndef ENGINE_DEFINES_H
 #define ENGINE_DEFINES_H
 
+#define ENGINE_VERSION_MAJOR 0
+#define ENGINE_VERSION_MINOR 1
+#define ENGINE_VERSION_PATCH 0
+
 #ifndef NULL
 #	define NULL ((void *)0)
 #endif

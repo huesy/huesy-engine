@@ -8,6 +8,9 @@ main(int argc, char *argv[])
 	Application app = {0};
 
 	ApplicationConfig config = {};
+
+	config.memory.poolSize = 1024 * 1024 * 512; // 64 MB memory pool.
+
 	config.window.width = 1280;
 	config.window.height = 720;
 	config.window.fullScreen = false;
@@ -33,6 +36,8 @@ main(int argc, char *argv[])
 		platform_sleep_to_control_fps(app.platform, 60);
 		isRunning = platform_is_running(app.platform);
 	}
+
+	memory_system_print_stats(app.memory);
 
 	// Shutdown the application.
 	application_shutdown(&app);

@@ -5,6 +5,14 @@
 EngineResult
 application_init(Application *app, const ApplicationConfig *config)
 {
+	// Initialize memory system.
+	app->memory = (MemorySystem *)malloc(sizeof(MemorySystem));
+	if (memory_system_init(app->memory, &config->memory) != ENGINE_SUCCESS) {
+		log_error("Memory system initialization failed.");
+		application_shutdown(app);
+		return ENGINE_ERROR;
+	}
+
 	// Allocate and initialize the platform.
 	app->platform = (Platform *)malloc(sizeof(Platform));
 	if (platform_init(app->platform, &config->platform) != ENGINE_SUCCESS) {
@@ -24,14 +32,6 @@ application_init(Application *app, const ApplicationConfig *config)
 	app->logging = (LoggingSystem *)malloc(sizeof(LoggingSystem));
 	if (logging_system_init(app->logging, &config->logging) != ENGINE_SUCCESS) {
 		log_error("Logging system initialization failed.");
-		application_shutdown(app);
-		return ENGINE_ERROR;
-	}
-
-	// Initialize memory system.
-	app->memory = (MemorySystem *)malloc(sizeof(MemorySystem));
-	if (memory_system_init(app->memory, &config->memory) != ENGINE_SUCCESS) {
-		log_error("Memory system initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
