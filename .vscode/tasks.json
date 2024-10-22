@@ -16,7 +16,10 @@
                 "$gcc",
                 "$msCompile"
             ],
-            "detail": "Configure and build the Debug configuration"
+            "detail": "Configure and build the Debug configuration",
+            "windows": {
+                "command": "${workspaceFolder}\\build.bat",
+            },
         },
         {
             "label": "Compile Debug",
@@ -34,7 +37,10 @@
                 "$msCompile"
             ],
             "detail": "Build the Debug configuration",
-            "dependsOn": "Build Debug"
+            "dependsOn": "Build Debug",
+            "windows": {
+                "command": "${workspaceFolder}\\build.bat",
+            },
         },
         {
             "label": "Build Release",
@@ -51,7 +57,10 @@
                 "$gcc",
                 "$msCompile"
             ],
-            "detail": "Configure and build the Release configuration"
+            "detail": "Configure and build the Release configuration",
+            "windows": {
+                "command": "${workspaceFolder}\\build.bat",
+            },
         },
         {
             "label": "Compile Release",
@@ -69,77 +78,10 @@
                 "$msCompile"
             ],
             "detail": "Build the Release configuration",
-            "dependsOn": "Build Release"
-        },
-        {
-            "label": "Build Debug Windows",
-            "type": "shell",
-            "command": "build.bat",
-            "args": [
-                "debug"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
+            "dependsOn": "Build Release",
+            "windows": {
+                "command": "${workspaceFolder}\\build.bat",
             },
-            "problemMatcher": [
-                "$gcc",
-                "$msCompile"
-            ],
-            "detail": "Configure and build the Debug configuration on Windows"
         },
-        {
-            "label": "Compile Debug Windows",
-            "type": "shell",
-            "command": "build.bat",
-            "args": [
-                "debug"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "problemMatcher": [
-                "$gcc",
-                "$msCompile"
-            ],
-            "detail": "Build the Debug configuration on Windows",
-            "dependsOn": "Build Debug Windows"
-        },
-        {
-            "label": "Build Release Windows",
-            "type": "shell",
-            "command": "build.bat",
-            "args": [
-                "release"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "problemMatcher": [
-                "$gcc",
-                "$msCompile"
-            ],
-            "detail": "Configure and build the Release configuration on Windows"
-        },
-        {
-            "label": "Compile Release Windows",
-            "type": "shell",
-            "command": "build.bat",
-            "args": [
-                "release"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "problemMatcher": [
-                "$gcc",
-                "$msCompile"
-            ],
-            "detail": "Build the Release configuration on Windows",
-            "dependsOn": "Build Release Windows"
-        }
     ]
 }

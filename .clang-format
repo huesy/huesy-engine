@@ -84,7 +84,7 @@ ColumnLimit: 80
 ContinuationIndentWidth: 8
 # indent continued lines by two tabs
 
-IndentCaseLabels: false
+IndentCaseLabels: true
 # case labels have same indentation as switch statement.
 
 IndentWidth: 4
@@ -124,3 +124,12 @@ SpacesInParentheses: false
 
 SpacesInSquareBrackets: false
 # No spaces in [count] style invocations of []
+
+IndentPPDirectives: AfterHash
+# Indent preprocessor directives after #
+# e.g.
+# if FOO
+#   if BAR
+#     include <foo>
+#   endif
+# endif

@@ -5,8 +5,13 @@ project(engine)
 set(CMAKE_C_STANDARD 11)
 
 # Define sources
-set(SOURCES
-    src/engine.c
+# set(SOURCES
+#     src/engine.c
+# )
+file(GLOB SOURCES
+    "src/*.c"
+    "src/platform/*.c"
+    "src/renderer/*.c"
 )
 
 # Create library
