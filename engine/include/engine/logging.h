@@ -11,7 +11,7 @@
 #define ENGINE_LOGGING_H
 
 #include "engine/defines.h"
-#include "engine/logging.h"
+#include "engine/platform.h"
 
 #define LOG_INFO_ENABLED 1
 #define LOG_WARNING_ENABLED 1
@@ -48,6 +48,24 @@ typedef enum {
 	LOG_LEVEL_TRACE = 5,
 } LogLevel;
 
+typedef struct LoggingSystemConfig {
+	/** @brief The log level to output messages at. */
+	LogLevel level;
+	/** @brief The file to output log messages to. */
+	const char *file;
+} LoggingSystemConfig;
+
+typedef struct LoggingSystem {
+	/** @brief The log level to output messages at. */
+	LogLevel level;
+	/** @brief The file to output log messages to. */
+	const char *file;
+} LoggingSystem;
+
+EngineResult logging_system_init(LoggingSystem *system,
+		const LoggingSystemConfig *config);
+void logging_system_shutdown(LoggingSystem *system);
+
 /**
  * @brief Outputs a log message at the specified level.
  *
@@ -67,7 +85,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_fatal(message, ...) \
-		log_message(LOG_LEVEL_FATAL, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_FATAL, message, ##__VA_ARGS__)
 #else
 #	define log_fatal(message, ...)
 #endif
@@ -82,7 +100,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_error(message, ...) \
-		log_message(LOG_LEVEL_ERROR, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_ERROR, message, ##__VA_ARGS__)
 #else
 #	define log_error(message, ...)
 #endif
@@ -97,7 +115,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_warning(message, ...) \
-		log_message(LOG_LEVEL_WARNING, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_WARNING, message, ##__VA_ARGS__)
 #else
 #	define log_warning(message, ...)
 #endif
@@ -112,7 +130,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_info(message, ...) \
-		log_message(LOG_LEVEL_INFO, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_INFO, message, ##__VA_ARGS__)
 #else
 #	define log_info(message, ...)
 #endif
@@ -127,7 +145,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_debug(message, ...) \
-		log_message(LOG_LEVEL_DEBUG, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_DEBUG, message, ##__VA_ARGS__)
 #else
 #	define log_debug(message, ...)
 #endif
@@ -142,7 +160,7 @@ ENGINE_API void platform_log_message(LogLevel level, const char *format, ...);
  * message.
  */
 #	define log_trace(message, ...) \
-		log_message(LOG_LEVEL_TRACE, message, ##__VA_ARGS__)
+		platform_log_message(LOG_LEVEL_TRACE, message, ##__VA_ARGS__)
 #else
 #	define log_trace(message, ...)
 #endif

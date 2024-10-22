@@ -12,19 +12,37 @@
 
 #include "engine/defines.h"
 
+typedef struct MemorySystemConfig {
+	/** @brief The size of the memory pool. */
+	u64 poolSize;
+} MemorySystemConfig;
+
+typedef struct MemorySystem {
+	/** @brief The size of the memory pool. */
+	u64 poolSize;
+	/** @brief The memory pool. */
+	void *pool;
+} MemorySystem;
+
+EngineResult memory_system_init(MemorySystem *system,
+		const MemorySystemConfig *config);
+void memory_system_shutdown(MemorySystem *system);
+
 /**
  * @brief Allocates memory on the heap.
  *
+ * @param system A pointer to the memory system.
  * @param size The size of the memory to allocate.
  * @return void* A pointer to the allocated memory.
  */
-ENGINE_API void *memory_allocate(u64 size);
+ENGINE_API void *memory_system_allocate(MemorySystem *system, u64 size);
 
 /**
  * @brief Frees memory on the heap.
  *
+ * @param system A pointer to the memory system.
  * @param ptr The pointer to the memory to free.
  */
-ENGINE_API void memory_free(void *ptr);
+ENGINE_API void memory_system_free(MemorySystem *system, void *ptr);
 
 #endif // ENGINE_MEMORY_H

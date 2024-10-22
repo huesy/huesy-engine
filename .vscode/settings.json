@@ -22,8 +22,13 @@
   "terminal.integrated.fontFamily": "Consolas, 'Courier New', monospace",
   "C_Cpp.default.compilerPath": "C:\\LLVM\\bin\\clang.exe",
   "files.associations": {
+    "*.embeddedhtml": "html",
     "stdarg.h": "c",
     "renderer.h": "c",
-    "defines.h": "c"
+    "defines.h": "c",
+    "logging.h": "c",
+    "application.h": "c",
+    "memory.h": "c",
+    "stdio.h": "c"
   },
 }

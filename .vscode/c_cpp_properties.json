@@ -3,7 +3,10 @@
     {
       "name": "Mac",
       "includePath": [
-        "${workspaceFolder}/include/**"
+        "${workspaceFolder}/game/include/*",
+        "${workspaceFolder}/shared/include/*",
+        "${workspaceFolder}/engine/include/*",
+        "${workspaceFolder}/vendor/SDL/include/*"
       ],
       "defines": [
         "_DEBUG",
@@ -19,7 +22,10 @@
     {
       "name": "Linux",
       "includePath": [
-        "${workspaceFolder}/include/**"
+        "${workspaceFolder}/game/include/*",
+        "${workspaceFolder}/shared/include/*",
+        "${workspaceFolder}/engine/include/*",
+        "${workspaceFolder}/vendor/SDL/include/*"
       ],
       "defines": [
         "_DEBUG",

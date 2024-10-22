@@ -130,9 +130,6 @@ typedef enum EngineResult {
 	ENGINE_ERROR_INVALID_ARGUMENT,
 } EngineResult;
 
-#define ENGINE_SUCCESS 0
-#define ENGINE_FAILURE 1
-
 // Min and max limits
 #define MIN_U8 0U
 #define MIN_U16 0U

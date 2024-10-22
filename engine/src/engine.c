@@ -1,45 +1,24 @@
 #include "engine/engine.h"
+#include "engine/logging.h"
 #include "engine/platform.h"
 #include <SDL3/SDL.h>
 #include <stdio.h>
 
-ENGINE_API int
+ENGINE_API EngineResult
 engine_init(Engine *engine, const EngineConfig *config)
 {
-	engine->platform = config->platform;
-	engine->renderer = config->renderer;
+	ENGINE_UNUSED(config);
 
+	engine->isRunning = true;
+
+	log_info("Engine initialization successful.");
 	return ENGINE_SUCCESS;
 }
 
 void
 engine_shutdown(Engine *engine)
 {
-	//
-}
-
-void
-engine_run(Engine *engine)
-{
-	engine->isRunning = 1;
-
-	while (engine->isRunning) {
-		platform_poll_events(engine->platform);
-
-		// Render the frame.
-		// renderer_render_frame(engine->renderer);
-
-		// Present the frame.
-		// renderer_present_frame(engine->renderer);
-
-		// Sleep for a bit.
-		SDL_Delay(16);
-
-		// Check if the platform is still running.
-		// engine->isRunning = platform_is_running(engine->platform);
-
-		// Get the running time.
-		}
+	log_info("Engine shutdown complete.");
 }
 
 // 	PlatformConfig platformConfig = {0};

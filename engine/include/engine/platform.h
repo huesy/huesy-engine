@@ -2,43 +2,32 @@
 #define ENGINE_PLATFORM_H
 
 #include "engine/defines.h"
+#include "engine/window.h"
 
 typedef struct PlatformConfig {
-	i32 width;
-	i32 height;
-	const char *title;
+	// TODO: Add platform-specific configuration.
 } PlatformConfig;
 
 typedef struct Platform {
-	void *handle;
+	void *windowHandle;
+	b8 isRunning;
 } Platform;
 
-// Initialize the platform.
 EngineResult platform_init(Platform *platform, const PlatformConfig *config);
-// Shutdown the platform.
 void platform_shutdown(Platform *platform);
 
-// ============================================================================
+EngineResult platform_window_create(Platform *platform,
+		Window *window,
+		const WindowConfig *config);
+void platform_window_destroy(Platform *platform, Window *window);
 
-// Poll events on the platform.
 void platform_poll_events(Platform *platform);
-// Check if the platform is running.
 b8 platform_is_running(Platform *platform);
-// Get the running time of the platform.
-u64 platform_get_running_time(Platform *platform);
+void platform_sleep_to_control_fps(Platform *platform, u32 fps);
 
 // ============================================================================
-#pragma region Memory
 
 void *platform_memory_allocate(u64 size);
 void platform_memory_free(void *ptr);
-
-#pragma endregion
-// ============================================================================
-#pragma region Logging
-
-void platform_log_message(const char *message);
-
-#pragma endregion
 
 #endif // ENGINE_PLATFORM_H

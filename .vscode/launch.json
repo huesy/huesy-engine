@@ -23,6 +23,7 @@
                 },
             },
             "osx": {
+                "type": "lldb",
                 "program": "${workspaceFolder}/build/debug/bin/game.app/Contents/MacOS/game",
             },
             "args": [],
