@@ -48,24 +48,6 @@ typedef enum {
 	LOG_LEVEL_TRACE = 5,
 } LogLevel;
 
-typedef struct LoggingSystemConfig {
-	/** @brief The log level to output messages at. */
-	LogLevel level;
-	/** @brief The file to output log messages to. */
-	const char *file;
-} LoggingSystemConfig;
-
-typedef struct LoggingSystem {
-	/** @brief The log level to output messages at. */
-	LogLevel level;
-	/** @brief The file to output log messages to. */
-	const char *file;
-} LoggingSystem;
-
-EngineResult logging_system_init(LoggingSystem *system,
-		const LoggingSystemConfig *config);
-void logging_system_shutdown(LoggingSystem *system);
-
 /**
  * @brief Outputs a log message at the specified level.
  *

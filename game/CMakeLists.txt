@@ -8,13 +8,13 @@ set(SOURCES
     src/game.c
 )
 
-
-
 # Determine the appropriate flags based on the platform
-if(WIN32)
+# TODO: WIN32 and APPLE temporarily disabled for now with "_" prefix as we want
+# to be able to see the console output for now.
+if(_WIN32)
     # On Windows, use WIN32 flag to specify a GUI application (suppresses console)
     add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
-elseif(APPLE)
+elseif(_APPLE)
     # On macOS, use MACOSX_BUNDLE to create an App Bundle (suppresses terminal)
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
 else()

@@ -31,3 +31,6 @@ PUBLIC
     shared
     SDL3::SDL3
 )
+
+# Define ENGINE_EXPORT only for the engine library.
+target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_EXPORT)

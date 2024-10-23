@@ -21,6 +21,8 @@ renderer_system_init(RendererSystem *system,
 
 	SDL_SetRenderDrawColor(system->handle, 0, 0, 0, 255);
 
+	log_info("Renderer system initialized.");
+
 	return ENGINE_SUCCESS;
 }
 

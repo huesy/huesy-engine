@@ -26,11 +26,11 @@ typedef struct MemorySystem {
 	u64 poolSize;			 /**< The size of the memory pool. */
 	void *pool;				 /**< The memory pool. */
 	u64 usedMemory;			 /**< The amount of memory used. */
-	u32 allocationCount;	 /**< The number of allocations. */
+	u32 allocationCount;	 /**< The number of allocation operations. */
 	MemoryBlock *freeBlocks; /**< The free list of memory blocks. */
 } MemorySystem;
 
-EngineResult memory_system_init(MemorySystem *system,
+EngineResult memory_system_init(MemorySystem **system,
 		const MemorySystemConfig *config);
 void memory_system_shutdown(MemorySystem *system);
 

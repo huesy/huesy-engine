@@ -3,16 +3,15 @@
     {
       "name": "Mac",
       "includePath": [
-        "${workspaceFolder}/game/include/*",
-        "${workspaceFolder}/shared/include/*",
-        "${workspaceFolder}/engine/include/*",
-        "${workspaceFolder}/vendor/SDL/include/*"
+        "${workspaceFolder}/game/include",
+        "${workspaceFolder}/shared/include",
+        "${workspaceFolder}/engine/include",
+        "${workspaceFolder}/vendor/SDL/include"
       ],
       "defines": [
         "_DEBUG",
         "UNICODE",
-        "_UNICODE",
-        "ENGINE_EXPORT"
+        "_UNICODE"
       ],
       "compilerPath": "/usr/bin/clang",
       "cStandard": "c17",
@@ -22,16 +21,15 @@
     {
       "name": "Linux",
       "includePath": [
-        "${workspaceFolder}/game/include/*",
-        "${workspaceFolder}/shared/include/*",
-        "${workspaceFolder}/engine/include/*",
-        "${workspaceFolder}/vendor/SDL/include/*"
+        "${workspaceFolder}/game/include",
+        "${workspaceFolder}/shared/include",
+        "${workspaceFolder}/engine/include",
+        "${workspaceFolder}/vendor/SDL/include"
       ],
       "defines": [
         "_DEBUG",
         "UNICODE",
-        "_UNICODE",
-        "ENGINE_EXPORT"
+        "_UNICODE"
       ],
       "compilerPath": "/usr/bin/clang",
       "cStandard": "c17",
@@ -41,16 +39,15 @@
     {
       "name": "Win32",
       "includePath": [
-        "${workspaceFolder}/game/include/*",
-        "${workspaceFolder}/shared/include/*",
-        "${workspaceFolder}/engine/include/*",
-        "${workspaceFolder}/vendor/SDL/include/*"
+        "${workspaceFolder}/game/include",
+        "${workspaceFolder}/shared/include",
+        "${workspaceFolder}/engine/include",
+        "${workspaceFolder}/vendor/SDL/include"
       ],
       "defines": [
         "_DEBUG",
         "UNICODE",
-        "_UNICODE",
-        "ENGINE_EXPORT"
+        "_UNICODE"
       ],
       "windowsSdkVersion": "10.0.19041.0",
       "compilerPath": "C:/Program Files/LLVM/bin/clang.exe",

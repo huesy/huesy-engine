@@ -57,13 +57,17 @@
 
 // API export/import
 #if defined(PLATFORM_WINDOWS)
-#	ifdef ENGINE_EXPORT
-#		define ENGINE_API __declspec(dllexport)
+#	if defined(ENGINE_SHARED)
+#		if defined(ENGINE_EXPORT)
+#			define ENGINE_API __declspec(dllexport)
+#		else
+#			define ENGINE_API __declspec(dllimport)
+#		endif
 #	else
-#		define ENGINE_API __declspec(dllimport)
+#		define ENGINE_API
 #	endif
 #elif defined(PLATFORM_LINUX) || defined(PLATFORM_MACOS)
-#	ifdef ENGINE_EXPORT
+#	if defined(ENGINE_EXPORT) && defined(ENGINE_SHARED)
 #		define ENGINE_API __attribute__((visibility("default")))
 #	else
 #		define ENGINE_API
@@ -172,13 +176,15 @@ typedef enum EngineResult {
 
 // Error handling macros
 #ifdef _DEBUG
-#	define ENGINE_ASSERT(condition, message)                               \
-		do {                                                                \
-			if (!(condition)) {                                             \
-				log_error("[ASSERT] %s\nFile: %s\nLine: %d\nMessage: %s\n", \
-						#condition, __FILE__, __LINE__, message);           \
-				abort();                                                    \
-			}                                                               \
+#	define ENGINE_ASSERT(condition, message)                        \
+		do {                                                         \
+			if (!(condition)) {                                      \
+				log_error(                                           \
+						"[ASSERT] %s\nFile: %s\nLine: %d\nMessage: " \
+						"%s\n",                                      \
+						#condition, __FILE__, __LINE__, message);    \
+				abort();                                             \
+			}                                                        \
 		} while (0)
 #else
 #	define ENGINE_ASSERT(condition, message) ((void)0)

@@ -99,27 +99,33 @@ platform_log_message(LogLevel level, const char *format, ...)
 
 	switch (level) {
 		case LOG_LEVEL_FATAL: {
-			SDL_LogCritical(SDL_LOG_CATEGORY_SYSTEM, format, args);
+			SDL_LogMessageV(SDL_LOG_CATEGORY_SYSTEM, SDL_LOG_PRIORITY_CRITICAL,
+					format, args);
 		} break;
 
 		case LOG_LEVEL_ERROR: {
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, format, args);
+			SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION,
+					SDL_LOG_PRIORITY_ERROR, format, args);
 		} break;
 
 		case LOG_LEVEL_WARNING: {
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, format, args);
+			SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_WARN,
+					format, args);
 		} break;
 
 		case LOG_LEVEL_INFO: {
-			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, format, args);
+			SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
+					format, args);
 		} break;
 
 		case LOG_LEVEL_DEBUG: {
-			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, format, args);
+			SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION,
+					SDL_LOG_PRIORITY_DEBUG, format, args);
 		} break;
 
-		default: {
-			SDL_Log(format, args);
+		case LOG_LEVEL_TRACE: {
+			SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION,
+					SDL_LOG_PRIORITY_VERBOSE, format, args);
 		} break;
 	}
 

@@ -20,7 +20,6 @@
 
 typedef struct ApplicationConfig {
 	PlatformConfig platform;
-	LoggingSystemConfig logging;
 	MemorySystemConfig memory;
 	EngineConfig engine;
 	// EventSystemConfig events;
@@ -38,7 +37,6 @@ typedef struct ApplicationConfig {
 
 typedef struct Application {
 	Platform *platform;
-	LoggingSystem *logging;
 	MemorySystem *memory;
 	Engine *engine;
 	Window *window;
