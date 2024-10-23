@@ -7,7 +7,7 @@ EngineResult
 application_init(Application *app, const ApplicationConfig *config)
 {
 	// Initialize memory system first - it should allocate its own memory
-	// internally
+	// internally.
 	if (memory_system_init(&app->memory, &config->memory) != ENGINE_SUCCESS) {
 		log_error("Memory system initialization failed.");
 		application_shutdown(app);
@@ -15,34 +15,35 @@ application_init(Application *app, const ApplicationConfig *config)
 	}
 
 	// Use memory system for all subsequent allocations
-	app->platform = memory_system_allocate(app->memory, sizeof(Platform));
-	if (platform_init(app->platform, &config->platform) != ENGINE_SUCCESS) {
+	if (platform_init(app, &config->platform) != ENGINE_SUCCESS) {
 		log_error("Platform initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
 
-	app->engine = memory_system_allocate(app->memory, sizeof(Engine));
-	if (engine_init(app->engine, &config->engine) != ENGINE_SUCCESS) {
+	if (engine_init(app, &config->engine) != ENGINE_SUCCESS) {
 		log_error("Engine initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
 
 	// Create the window.
-	app->window = memory_system_allocate(app->memory, sizeof(Window));
-	if (platform_window_create(app->platform, app->window, &config->window) !=
-			ENGINE_SUCCESS) {
+	if (platform_window_create(app, &config->window) != ENGINE_SUCCESS) {
 		log_error("Window creation failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
 
 	// Initialize the renderer.
-	app->renderer = memory_system_allocate(app->memory, sizeof(RendererSystem));
-	if (renderer_system_init(app->renderer, app->window, &config->renderer) !=
-			ENGINE_SUCCESS) {
+	if (renderer_system_init(app, &config->renderer) != ENGINE_SUCCESS) {
 		log_error("Renderer initialization failed.");
+		application_shutdown(app);
+		return ENGINE_ERROR;
+	}
+
+	// Initialize the game.
+	if (game_init(app, &config->game) != ENGINE_SUCCESS) {
+		log_error("Game initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
@@ -53,6 +54,11 @@ application_init(Application *app, const ApplicationConfig *config)
 void
 application_shutdown(Application *app)
 {
+	if (app->game) {
+		game_shutdown(app->game);
+		memory_system_free(app->memory, app->game);
+	}
+
 	// networking_shutdown(app->networking);
 	// scripting_shutdown(app->scripting);
 	// scene_shutdown(app->scene);
@@ -65,27 +71,97 @@ application_shutdown(Application *app)
 	if (app->renderer != NULL) {
 		renderer_system_shutdown(
 				app->renderer); // Renderer shutdown before window.
-		memory_system_free(app->memory, app->renderer);
 	}
 
 	if (app->window) {
-		platform_window_destroy(app->platform, app->window);
-		memory_system_free(app->memory, app->window);
+		platform_window_destroy(app);
 	}
 
 	if (app->engine) {
 		engine_shutdown(app->engine);
-		memory_system_free(app->memory, app->engine);
 	}
 
 	if (app->platform) {
 		platform_shutdown(app->platform);
-		memory_system_free(app->memory, app->platform);
 	}
 
 	// Memory system should be shutdown last
 	if (app->memory) {
 		memory_system_shutdown(app->memory);
 		// Note: memory system handles freeing its own memory in shutdown
+	}
+}
+
+void
+application_run(Application *app)
+{
+	if (!app->state.isInitialized) {
+		log_error("Application is not initialized.");
+		return;
+	}
+
+	app->state.isRunning = true;
+
+	const f64 MAX_DELTA_TIME =
+			0.25f; // Maximum time step (prevents spiral of death)
+
+	GameLoopState *loop = &app->game->state.loop;
+
+	while (app->state.isRunning) {
+		// Timing
+		u64 currentTime = platform_get_absolute_time(app->platform);
+		f64 deltaTime = (currentTime - loop->lastTime) / 1000.0f;
+		loop->lastTime = currentTime;
+
+		// Clamp maximum frame time.
+		if (deltaTime > MAX_DELTA_TIME) {
+			deltaTime = MAX_DELTA_TIME;
+		}
+
+		// Accumulate time for fixed timestep updates.
+		loop->accumulator += deltaTime;
+
+		// Process input.
+		platform_poll_events(app->platform);
+		app->state.isRunning = platform_is_running(app->platform);
+
+		// Fixed timestep updates. This is the core game loop that updates the
+		// game state at a fixed timestep.
+		while (loop->accumulator >= loop->targetFrameTime) {
+			if (app->game->update) {
+				app->game->update(loop->targetFrameTime);
+			}
+			loop->accumulator -= loop->targetFrameTime;
+		}
+
+		// Calculate interpolation factor. This is used to blend the current
+		// frame with the previous frame to create a smooth animation.
+		loop->alpha = loop->accumulator / loop->targetFrameTime;
+
+		// Render.
+		if (app->game->render) {
+			app->game->render(loop->alpha);
+		}
+
+		// FPS counter.
+		loop->frameCount++;
+		if (currentTime - loop->fpsLastTime >= 1000) {
+			// Update FPS every second
+			loop->fps = loop->frameCount;
+			loop->frameCount = 0;
+			loop->fpsLastTime = currentTime;
+			log_info("FPS: %d", loop->fps);
+		}
+
+		// If vsync is disabled, manually control frame rate.
+		if (!app->renderer->isVsyncEnabled) {
+			u64 frameEndTime = platform_get_absolute_time(app->platform);
+			u64 frameTime = frameEndTime - currentTime;
+			u64 targetFrameTime = (u64)(loop->targetFrameTime * 1000.0f);
+
+			if (frameTime < targetFrameTime) {
+				platform_sleep(app->platform, targetFrameTime - frameTime);
+			}
+		}
 	}
 }

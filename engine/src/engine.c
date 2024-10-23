@@ -1,24 +1,43 @@
 #include "engine/engine.h"
+#include "engine/application.h"
 #include "engine/logging.h"
+#include "engine/memory.h"
 #include "engine/platform.h"
 #include <SDL3/SDL.h>
 #include <stdio.h>
 
 ENGINE_API EngineResult
-engine_init(Engine *engine, const EngineConfig *config)
+engine_init(Application *app, const EngineConfig *config)
 {
-	ENGINE_UNUSED(config);
+	app->engine = memory_system_allocate(app->memory, sizeof(Engine));
+	if (!app->engine) {
+		log_error("Failed to allocate memory for engine.");
+		return ENGINE_ERROR_ALLOCATION_FAILED;
+	}
 
+	Engine *engine = app->engine;
+	engine->isInitialized = false;
 	engine->isRunning = true;
 
+	// TODO: Other engine initialization.
+
+	engine->isInitialized = true;
 	log_info("Engine initialization successful.");
 	return ENGINE_SUCCESS;
 }
 
 void
-engine_shutdown(Engine *engine)
+engine_shutdown(Application *app)
 {
-	log_info("Engine shutdown complete.");
+	if (!app->engine) {
+		return;
+	}
+
+	// TODO: Engine cleanup.
+
+	memory_system_free(app->memory, app->engine);
+	app->engine = NULL;
+	log_info("Engine system shutdown successfully.");
 }
 
 // 	PlatformConfig platformConfig = {0};

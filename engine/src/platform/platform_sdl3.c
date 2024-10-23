@@ -1,50 +1,72 @@
+#include "engine/application.h"
 #include "engine/logging.h"
+#include "engine/memory.h"
 #include "engine/platform.h"
 #include "engine/window.h"
 #include <SDL3/SDL.h>
 
 EngineResult
-platform_init(Platform *platform, const PlatformConfig *config)
+platform_init(Application *app, const PlatformConfig *config)
 {
+	app->platform = memory_system_allocate(app->memory, sizeof(Platform));
+	if (!app->platform) {
+		log_error("Failed to allocate memory for platform.");
+		return ENGINE_ERROR_ALLOCATION_FAILED;
+	}
+
 	// TODO: Make flags configurable in the PlatformConfig.
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO)) {
 		log_error("SDL initialization failed: %s", SDL_GetError());
+		memory_system_free(app->memory, app->platform);
+		app->platform = NULL;
 		return ENGINE_ERROR;
 	}
 
-	platform->isRunning = true;
-	log_info("SDL initialized successfully.");
+	app->platform->isRunning = true;
+	log_info("Platform system (SDL) initialized successfully.");
 	return ENGINE_SUCCESS;
 }
 
 void
-platform_shutdown(Platform *platform)
+platform_shutdown(Application *app)
 {
+	if (!app->platform) {
+		return;
+	}
+
 	SDL_Quit();
+	memory_system_free(app->memory, app->platform);
+	app->platform = NULL;
+	log_info("Platform system (SDL) shutdown successfully.");
 }
 
 EngineResult
-platform_window_create(Platform *platform,
-		Window *window,
-		const WindowConfig *config)
+platform_window_create(Application *app, const WindowConfig *config)
 {
 	// Create SDL window.
-	window->handle =
+	app->window->handle =
 			SDL_CreateWindow("Huesy Engine", config->width, config->height, 0);
 
-	if (window->handle == NULL) {
-		log_error("Failed to create SDL window: %s", SDL_GetError());
+	if (app->window->handle == NULL) {
+		log_error("Failed to create platform (SDL) window: %s", SDL_GetError());
 		return ENGINE_ERROR;
 	}
 
-	log_info("SDL window created successfully.");
+	log_info("Platform system (SDL) window created successfully.");
 	return ENGINE_SUCCESS;
 }
 
 void
-platform_window_destroy(Platform *platform, Window *window)
+platform_window_destroy(Application *app)
 {
-	SDL_DestroyWindow((SDL_Window *)window->handle);
+	if (!app->window) {
+		return;
+	}
+
+	SDL_DestroyWindow((SDL_Window *)app->window->handle);
+	log_info("Platform system (SDL) window destroyed successfully.");
+	memory_system_free(app->memory, app->window);
+	app->window = NULL;
 }
 
 b8
@@ -67,9 +89,15 @@ platform_poll_events(Platform *platform)
 }
 
 void
-platform_sleep_to_control_fps(Platform *platform, u32 fps)
+platform_sleep(Platform *platform, u32 milliseconds)
 {
-	SDL_Delay(1000 / fps);
+	SDL_Delay(milliseconds);
+}
+
+f64
+platform_get_absolute_time(Platform *platform)
+{
+	return SDL_GetTicks();
 }
 
 // ============================================================================
@@ -85,6 +113,12 @@ void
 platform_memory_free(void *ptr)
 {
 	SDL_free(ptr);
+}
+
+void
+platform_memory_copy(void *dest, const void *src, u64 size)
+{
+	memcpy(dest, src, size);
 }
 
 #pragma endregion

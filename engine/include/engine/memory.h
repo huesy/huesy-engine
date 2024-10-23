@@ -52,6 +52,20 @@ ENGINE_API void *memory_system_allocate(MemorySystem *system, u64 size);
 ENGINE_API void memory_system_free(MemorySystem *system, void *ptr);
 
 /**
+ * @brief Copies memory from one location to another.
+ *
+ * @param system A pointer to the memory system.
+ * @param dest The destination pointer.
+ * @param src The source pointer.
+ * @param size The size of the memory to copy.
+ * @return b8 True if the copy was successful, false otherwise.
+ */
+ENGINE_API b8 memory_system_copy(MemorySystem *system,
+		void *dest,
+		const void *src,
+		u64 size);
+
+/**
  * @brief Reallocates memory on the heap.
  *
  * @param system A pointer to the memory system.

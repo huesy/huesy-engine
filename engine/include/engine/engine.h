@@ -10,11 +10,12 @@ typedef struct EngineConfig {
 
 // The engine state.
 typedef struct Engine {
+	b8 isInitialized;
 	b8 isRunning;
 } Engine;
 
-EngineResult engine_init(Engine *engine, const EngineConfig *config);
-void engine_shutdown(Engine *engine);
+EngineResult engine_init(struct Application *app, const EngineConfig *config);
+void engine_shutdown(struct Application *app);
 void engine_run(Engine *engine);
 
 #endif // ENGINE_ENGINE_H

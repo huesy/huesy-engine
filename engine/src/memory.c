@@ -114,6 +114,51 @@ memory_system_free(MemorySystem *system, void *ptr)
 	log_debug("Freed memory. New used: %llu", system->usedMemory);
 }
 
+b8
+memory_system_copy(MemorySystem *system, void *dest, const void *src, u64 size)
+{
+	// Validate pointers are within our memory pool.
+	if (!dest || !src || !size) {
+		log_error("Invalid parameters in memory_system_copy.");
+		return false;
+	}
+
+	// Check if both pointers are within our pool's range.
+	u8 *poolStart = (u8 *)system->pool;
+	u8 *poolEnd = poolStart + system->poolSize;
+
+	// Only validate if the pointers are from our pool (they might be external).
+	if ((u8 *)dest < poolStart || (u8 *)dest >= poolEnd ||
+			(u8 *)src < poolStart || (u8 *)src >= poolEnd) {
+		log_error("Invalid pointers in memory_system_copy.");
+		return false;
+	}
+
+	// Check for overlap.
+	if ((u8 *)dest >= (u8 *)src && (u8 *)dest < (u8 *)src + size) {
+		log_error("Memory overlap in memory_system_copy.");
+		return false;
+	}
+
+	// Handle overlapping memory
+	u8 *d = (u8 *)dest;
+	const u8 *s = (u8 *)src;
+
+	if (d > s) {
+		// Copy backwards
+		for (u64 i = size; i > 0; --i) {
+			d[i - 1] = s[i - 1];
+		}
+	} else {
+		// Copy forwards
+		for (u64 i = 0; i < size; ++i) {
+			d[i] = s[i];
+		}
+	}
+
+	return true;
+}
+
 void
 memory_system_print_stats(const MemorySystem *system)
 {

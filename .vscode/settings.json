@@ -29,6 +29,7 @@
     "logging.h": "c",
     "application.h": "c",
     "memory.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "stdlib.h": "c"
   },
 }
