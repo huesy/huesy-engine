@@ -4,8 +4,10 @@
 #include "engine/defines.h"
 #include "engine/window.h"
 
+struct Application;
+
 typedef struct PlatformConfig {
-	// TODO: Add platform-specific configuration.
+	u32 flags; /**< Platform initializationflags. */
 } PlatformConfig;
 
 typedef struct Platform {

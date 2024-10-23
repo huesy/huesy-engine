@@ -3,19 +3,25 @@
 
 #include "defines.h"
 
+struct Application;
+
 // The configuration for the engine.
 typedef struct EngineConfig {
-	// TODO: Add engine configuration.
+	const char *applicationName;
+	f64 targetFrameRate;
 } EngineConfig;
 
-// The engine state.
 typedef struct Engine {
 	b8 isInitialized;
 	b8 isRunning;
+	const char *applicationName;
+	f64 targetFrameRate;
 } Engine;
 
-EngineResult engine_init(struct Application *app, const EngineConfig *config);
-void engine_shutdown(struct Application *app);
-void engine_run(Engine *engine);
+// Core engine functions.
+ENGINE_API EngineResult engine_init(struct Application *app,
+		const EngineConfig *config);
+ENGINE_API void engine_shutdown(struct Application *app);
+ENGINE_API void engine_run(struct Application *app);
 
 #endif // ENGINE_ENGINE_H

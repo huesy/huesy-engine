@@ -1,26 +1,30 @@
 #include "engine/application.h"
+#include "engine/engine.h"
 #include "engine/logging.h"
 #include "engine/memory.h"
+#include "engine/platform.h"
+#include "engine/renderer.h"
+#include "engine/window.h"
 #include <stdlib.h>
 
 EngineResult
 application_init(Application *app, const ApplicationConfig *config)
 {
-	// Initialize memory system first - it should allocate its own memory
-	// internally.
+	// Memory system must be initialized first.
 	if (memory_system_init(&app->memory, &config->memory) != ENGINE_SUCCESS) {
 		log_error("Memory system initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
 
-	// Use memory system for all subsequent allocations
+	// Initialize platform.
 	if (platform_init(app, &config->platform) != ENGINE_SUCCESS) {
 		log_error("Platform initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
 
+	// Initialize engine.
 	if (engine_init(app, &config->engine) != ENGINE_SUCCESS) {
 		log_error("Engine initialization failed.");
 		application_shutdown(app);
@@ -28,7 +32,7 @@ application_init(Application *app, const ApplicationConfig *config)
 	}
 
 	// Create the window.
-	if (platform_window_create(app, &config->window) != ENGINE_SUCCESS) {
+	if (window_create(app, &config->window) != ENGINE_SUCCESS) {
 		log_error("Window creation failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
@@ -41,12 +45,35 @@ application_init(Application *app, const ApplicationConfig *config)
 		return ENGINE_ERROR;
 	}
 
-	// Initialize the game.
-	if (game_init(app, &config->game) != ENGINE_SUCCESS) {
-		log_error("Game initialization failed.");
-		application_shutdown(app);
-		return ENGINE_ERROR;
+	// Initialize application state.
+	app->state.isInitialized = false;
+	app->state.isRunning = false;
+
+	// Initialize the loop state.
+	app->state.loop.targetFrameRate = config->engine.targetFrameRate;
+	app->state.loop.targetFrameTime = 1.0f / app->state.loop.targetFrameRate;
+	app->state.loop.accumulator = 0.0f;
+	app->state.loop.frameTime = 0.0f;
+	app->state.loop.lastTime = platform_get_absolute_time(app->platform);
+	app->state.loop.alpha = 0.0f;
+	app->state.loop.fps = 0;
+	app->state.loop.frameCount = 0;
+	app->state.loop.fpsLastTime = app->state.loop.lastTime;
+
+	// Initialize the application interface.
+	if (app->interface && app->interface->state &&
+			app->interface->stateSize > 0) {
+		app->interface->state =
+				memory_system_allocate(app->memory, app->interface->stateSize);
+		if (!app->interface->state) {
+			log_error("Failed to allocate application interface state memory.");
+			application_shutdown(app);
+			return ENGINE_ERROR_ALLOCATION_FAILED;
+		}
 	}
+
+	app->state.isInitialized = true;
+	app->state.isRunning = true;
 
 	return ENGINE_SUCCESS;
 }
@@ -54,11 +81,6 @@ application_init(Application *app, const ApplicationConfig *config)
 void
 application_shutdown(Application *app)
 {
-	if (app->game) {
-		game_shutdown(app->game);
-		memory_system_free(app->memory, app->game);
-	}
-
 	// networking_shutdown(app->networking);
 	// scripting_shutdown(app->scripting);
 	// scene_shutdown(app->scene);
@@ -68,7 +90,7 @@ application_shutdown(Application *app)
 	// resource_system_shutdown(app->resource);
 	// input_system_shutdown(app->input);
 	// event_system_shutdown(app->event);
-	if (app->renderer != NULL) {
+	if (app->renderer) {
 		renderer_system_shutdown(
 				app->renderer); // Renderer shutdown before window.
 	}
@@ -95,17 +117,15 @@ application_shutdown(Application *app)
 void
 application_run(Application *app)
 {
-	if (!app->state.isInitialized) {
-		log_error("Application is not initialized.");
+	if (!app->state.isInitialized || !app->interface) {
+		log_error("Application is not properly initialized.");
 		return;
 	}
 
-	app->state.isRunning = true;
-
 	const f64 MAX_DELTA_TIME =
 			0.25f; // Maximum time step (prevents spiral of death)
-
-	GameLoopState *loop = &app->game->state.loop;
+	ApplicationLoopState *loop = &app->state.loop;
+	f64 lastTime = platform_get_absolute_time(app->platform);
 
 	while (app->state.isRunning) {
 		// Timing
@@ -125,11 +145,11 @@ application_run(Application *app)
 		platform_poll_events(app->platform);
 		app->state.isRunning = platform_is_running(app->platform);
 
-		// Fixed timestep updates. This is the core game loop that updates the
-		// game state at a fixed timestep.
+		// Fixed timestep updates. This is the core game loop that updates
+		// the game state at a fixed timestep.
 		while (loop->accumulator >= loop->targetFrameTime) {
-			if (app->game->update) {
-				app->game->update(loop->targetFrameTime);
+			if (app->interface->update) {
+				app->interface->update(app, loop->targetFrameTime);
 			}
 			loop->accumulator -= loop->targetFrameTime;
 		}
@@ -139,8 +159,8 @@ application_run(Application *app)
 		loop->alpha = loop->accumulator / loop->targetFrameTime;
 
 		// Render.
-		if (app->game->render) {
-			app->game->render(loop->alpha);
+		if (app->interface->render) {
+			app->interface->render(app, loop->alpha);
 		}
 
 		// FPS counter.

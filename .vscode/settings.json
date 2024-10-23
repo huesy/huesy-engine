@@ -30,6 +30,7 @@
     "application.h": "c",
     "memory.h": "c",
     "stdio.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "sdl.h": "c"
   },
 }

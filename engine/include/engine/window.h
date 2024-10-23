@@ -13,13 +13,14 @@
 #include "engine/defines.h"
 
 typedef struct WindowConfig {
-	u32 width;	   // Resolution width.
-	u32 height;	   // Resolution height.
-	b8 fullScreen; // Full screen mode.
+	u32 width;		   /**< Resolution width. */
+	u32 height;		   /**< Resolution height. */
+	b8 fullScreen;	   /**< Full screen mode. */
+	const char *title; /**< The window title. */
 } WindowConfig;
 
 typedef struct Window {
-	void *handle; // Platform-specific window handle.
+	void *handle; /**< Platform-specific window handle. */
 } Window;
 
 #endif // ENGINE_WINDOW_H
