@@ -30,9 +30,9 @@ typedef struct MemorySystem {
 	MemoryBlock *freeBlocks; /**< The free list of memory blocks. */
 } MemorySystem;
 
-EngineResult memory_system_init(MemorySystem **system,
+EngineResult memory_system_init(struct Application *app,
 		const MemorySystemConfig *config);
-void memory_system_shutdown(MemorySystem *system);
+void memory_system_shutdown(struct Application *app);
 
 /**
  * @brief Allocates memory on the heap.

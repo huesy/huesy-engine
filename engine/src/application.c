@@ -3,6 +3,7 @@
 #include "engine/logging.h"
 #include "engine/memory.h"
 #include "engine/platform.h"
+#include "engine/plugin.h"
 #include "engine/renderer.h"
 #include "engine/window.h"
 #include <stdlib.h>
@@ -11,7 +12,7 @@ EngineResult
 application_init(Application *app, const ApplicationConfig *config)
 {
 	// Memory system must be initialized first.
-	if (memory_system_init(&app->memory, &config->memory) != ENGINE_SUCCESS) {
+	if (memory_system_init(app, &config->memory) != ENGINE_SUCCESS) {
 		log_error("Memory system initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
@@ -32,7 +33,7 @@ application_init(Application *app, const ApplicationConfig *config)
 	}
 
 	// Create the window.
-	if (window_create(app, &config->window) != ENGINE_SUCCESS) {
+	if (platform_window_create(app, &config->window) != ENGINE_SUCCESS) {
 		log_error("Window creation failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
@@ -41,6 +42,13 @@ application_init(Application *app, const ApplicationConfig *config)
 	// Initialize the renderer.
 	if (renderer_system_init(app, &config->renderer) != ENGINE_SUCCESS) {
 		log_error("Renderer initialization failed.");
+		application_shutdown(app);
+		return ENGINE_ERROR;
+	}
+
+	// Initialize the plugin system.
+	if (plugin_system_init(app, &config->plugins) != ENGINE_SUCCESS) {
+		log_error("Plugin system initialization failed.");
 		application_shutdown(app);
 		return ENGINE_ERROR;
 	}
@@ -90,6 +98,11 @@ application_shutdown(Application *app)
 	// resource_system_shutdown(app->resource);
 	// input_system_shutdown(app->input);
 	// event_system_shutdown(app->event);
+
+	if (app->plugins) {
+		plugin_system_shutdown(app);
+	}
+
 	if (app->renderer) {
 		renderer_system_shutdown(
 				app->renderer); // Renderer shutdown before window.
@@ -145,6 +158,8 @@ application_run(Application *app)
 		platform_poll_events(app->platform);
 		app->state.isRunning = platform_is_running(app->platform);
 
+		plugin_system_update(app, deltaTime);
+
 		// Fixed timestep updates. This is the core game loop that updates
 		// the game state at a fixed timestep.
 		while (loop->accumulator >= loop->targetFrameTime) {
@@ -159,6 +174,7 @@ application_run(Application *app)
 		loop->alpha = loop->accumulator / loop->targetFrameTime;
 
 		// Render.
+		plugin_system_render(app, loop->alpha);
 		if (app->interface->render) {
 			app->interface->render(app, loop->alpha);
 		}

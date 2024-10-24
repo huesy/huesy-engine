@@ -18,18 +18,13 @@
 #include "engine/renderer.h"
 #include "engine/window.h"
 
-struct Platform;
-struct Engine;
-struct Window;
-struct Renderer;
-struct Memory;
-
 typedef struct ApplicationSystems {
-	struct Platform *platform;
-	struct Engine *engine;
-	struct Window *window;
-	struct RendererSystem *renderer;
-	struct MemorySystem *memory;
+	Platform *platform;
+	Engine *engine;
+	Window *window;
+	RendererSystem *renderer;
+	MemorySystem *memory;
+	PluginSystem *plugin;
 } ApplicationSystems;
 
 typedef struct ApplicationLoopState {
@@ -53,10 +48,8 @@ typedef struct ApplicationState {
 } ApplicationState;
 
 typedef struct Application {
-	// Systems
+	// Systems.
 	ApplicationSystems systems;
-	// Plugin system.
-	PluginSystem plugins;
 
 	// Internal engine state
 	ApplicationState internalState;
@@ -80,6 +73,7 @@ typedef struct ApplicationConfig {
 	EngineConfig engine;
 	WindowConfig window;
 	RendererSystemConfig renderer;
+	PluginSystemConfig plugins;
 
 	// Optional configurations for future systems
 	// AudioConfig audio;

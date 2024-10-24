@@ -16,16 +16,16 @@
 typedef struct RendererSystemConfig {
 	u32 width;			 /**< Resolution width. */
 	u32 height;			 /**< Resolution height. */
-	b8 vsyncEnabled;	 /**< Enable vertical sync. */
+	b8 vsync;			 /**< Enable vertical sync. */
 	f64 targetFrameRate; /**< Target frame rate. */
 	void *context;		 /**< Platform-specific context. */
 } RendererSystemConfig;
 
 typedef struct RendererSystem {
-	void *handle;	   /**< Platform-specific renderer handle. */
-	b8 isVsyncEnabled; /**< Is vsync enabled. */
-	u32 width;		   /**< Resolution width. */
-	u32 height;		   /**< Resolution height. */
+	void *handle; /**< Platform-specific renderer handle. */
+	b8 vsync;	  /**< Is vsync enabled. */
+	u32 width;	  /**< Resolution width. */
+	u32 height;	  /**< Resolution height. */
 } RendererSystem;
 
 /**

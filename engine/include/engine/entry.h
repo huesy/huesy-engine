@@ -19,7 +19,7 @@ main(int argc, char **argv)
 	config.engine.targetFrameRate = 60.0f;
 	config.window.width = 1280;
 	config.window.height = 720;
-	config.window.fullscreen = false;
+	config.window.fullScreen = false;
 	config.window.title = "My Application Window";
 	config.renderer.width = 1280;
 	config.renderer.height = 720;

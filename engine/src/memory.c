@@ -1,45 +1,50 @@
 #include "engine/memory.h"
+#include "engine/application.h"
 #include "engine/logging.h"
 #include "engine/platform.h"
 #include <stdio.h>
 
 EngineResult
-memory_system_init(MemorySystem **system, const MemorySystemConfig *config)
+memory_system_init(Application *app, const MemorySystemConfig *config)
 {
 	// Allocate memory for the memory system itself.
-	*system = platform_memory_allocate(sizeof(MemorySystem));
-	if (*system == NULL) {
+	app->systems.memory = platform_memory_allocate(sizeof(MemorySystem));
+	if (app->systems.memory == NULL) {
 		log_error("Failed to allocate memory for memory system.");
 		return ENGINE_ERROR_ALLOCATION_FAILED;
 	}
 
 	// Initialize the memory system.
-	MemorySystem *memorySystem = *system;
-	memorySystem->poolSize = config->poolSize;
-	memorySystem->pool = platform_memory_allocate(memorySystem->poolSize);
-	if (memorySystem->pool == NULL) {
+	MemorySystem *system = &app->systems.memory;
+	system->poolSize = config->poolSize;
+	system->pool = platform_memory_allocate(system->poolSize);
+	if (system->pool == NULL) {
 		log_error("Failed to allocate memory pool.");
-		platform_memory_free(*system);
+		platform_memory_free(system);
 		return ENGINE_ERROR_ALLOCATION_FAILED;
 	}
 
-	memorySystem->usedMemory = 0;
-	memorySystem->allocationCount = 0;
-	memorySystem->freeBlocks = NULL; // Initially there are no free blocks.
+	system->usedMemory = 0;
+	system->allocationCount = 0;
+	system->freeBlocks = NULL; // Initially there are no free blocks.
 	log_info("Memory system initialized with pool size %llu bytes.",
-			memorySystem->poolSize);
+			system->poolSize);
 
 	return ENGINE_SUCCESS;
 }
 
 void
-memory_system_shutdown(MemorySystem *system)
+memory_system_shutdown(Application *app)
 {
+	MemorySystem *system = &app->systems.memory;
+
 	// Store the allocation count before we free the pool so we can log it.
 	u32 allocationCount = system->allocationCount;
 
 	platform_memory_free(system->pool);
 	platform_memory_free(system);
+
+	app->systems.memory = NULL;
 
 	log_info("Memory system shut down. Total allocations: %u", allocationCount);
 }
